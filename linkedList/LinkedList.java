@@ -1,9 +1,10 @@
 package linkedList;
+
 public class LinkedList {
 
 	private Node head = null;
 	private Node tail = null;
-	private int length = 0;
+	 int length = 0;
 
 	class Node {
 		int data;
@@ -20,53 +21,47 @@ public class LinkedList {
 		tail = newNode;
 		length = 1;
 	}
+	
 	// inserting
-	void insertAtBeginning(int data) {
+	public void insertAtBeginning(int data) {
 		Node newNode = new Node(data);
-		if (head == null) {
+		if (length == 0) {
 			head = newNode;
 			tail = newNode;
-		} else {
-			Node temp = head;
+		} else 
+		{
+			newNode.next = head;
 			head = newNode;
-			newNode.next = temp;
 		}
 		length++;
 	}
-	void insertAtPoistion(int pos, int data) {
-		if(pos==0)
+	
+	public boolean insertAtPosition(int index, int data) 
+	{
+		if(index<0||index>length)
+		{
+			return false;
+		}
+		if(index == 0)
 		{
 			insertAtBeginning(data);
+			return true;
 		}
-		else if(pos==length)
+		if(index == length)
 		{
 			insertAtEnd(data);
+			return true;
 		}
-		else if(pos>length)
-		{
-			System.out.println("index error");
-		}
-		else
-		{
-			Node newNode = new Node(data);
-			if (head == null) {
-				head = newNode;
-				tail = newNode;
-			} else {
-				Node temp = head;
-				for (int i = 1; i < pos; i++) 
-				{
-					temp = temp.next;
-				}
-				newNode.next = temp.next;
-				temp.next = newNode;
-			}
-			length++;
-		}
-	}
-	void insertAtEnd(int data) {
 		Node newNode = new Node(data);
-		if (head == null) {
+		Node temp = get(index-1);
+		newNode.next = temp.next;
+		temp.next = newNode;
+		length++;
+		return true;
+	}
+	public void insertAtEnd(int data) {
+		Node newNode = new Node(data);
+		if (length == 0) {
 			head = newNode;
 			tail = newNode;
 		} else {
@@ -75,59 +70,102 @@ public class LinkedList {
 		}
 		length++;
 	}
-
+	
 	//Deleting
-	void deleteAtBeginning()
+	public Node deleteAtBeginning()
 	{
-		Node temp = head;
-		if(head != null)
+		if(length == 0)
 		{
-			head = head.next;
+			return null;
 		}
+		Node temp = head;
+		head = head.next;
 		temp.next = null;
 		length--;
+		if(length == 0)
+		{
+			tail = null;
+		}
+		return temp;
 	}
-	void deleteAtPosition(int pos)
+	
+	public Node deleteAtPosition(int index)
 	{
-		if(pos==0)
+		if(index<0||index>=length)
 		{
-			deleteAtBeginning();
+			return null;
 		}
-		else if(pos==length-1)
+		if(index == 0)
 		{
-			deleteAtEnd();
+			return deleteAtBeginning();
 		}
-		else if(pos>length-1)
+		if(index == length-1)
 		{
-			System.out.println("index error");
+			return deleteAtEnd();
 		}
-		else
-		{
-			Node temp = head;
-			Node pre  =  head;
-			for (int i = 0; i < pos ; i++)
-			{
-				pre = temp;
-				temp = temp.next;			
-			}
+			Node pre = get(index-1);
+			Node temp = pre.next;
 			pre.next = temp.next;
 			temp.next = null;
-			length--;			
-		}
+			length--;
+			return temp;
 	}
-	void deleteAtEnd()
+	
+	public Node deleteAtEnd()
 	{
+		if(length==0)
+		{
+			return null;
+		}
 		Node temp = head;
-	    for (int i = 0; i < length-1; i++)
-	    {
-	    	temp = temp.next;
-	    }
-	    tail = temp;
-	    temp =null;
+		Node pre = head;
+		if(length == 1)
+		{
+			head = null;
+			tail = null;
+		}
+		else 
+		{
+			while(temp.next!=null)
+			{
+				pre = temp;
+				temp = temp.next;		
+			}
+			tail = pre;
+			tail.next = null;
+		}
 		length--;
+		return temp;
 	}
+	
+	//Get
+	public Node get(int index)
+	{
+		if(index<0||index>=length)
+		{
+			return null;
+		}
+		Node temp = head;
+		for(int i = 0 ; i < index ; i++)
+		{
+			temp = temp.next;
+		}
+		return temp;
+	}
+	
+	//Set
+	public boolean set(int index, int data) {
+		Node temp = get(index);
+		if(temp != null)
+		{
+			temp.data = data;
+			return  true;
+		}
+		return false;
+	}
+	
 	//Searching
-	int search(int data)
+	void search(int data)
 	{
 		Node temp = head;
 		for(int i = 0;i<length;i++)
@@ -135,25 +173,21 @@ public class LinkedList {
 			if(temp.data==data)
 			{
 				System.out.println("Data Present in index "+i);
-				return 0;
+				return;
 			}
 			temp = temp.next;	
 		}
 		System.out.println("Data is not Present");
-		return 0;
 	}
 
 	// Printing
 	void display() 
 	{
-		if (head != null) 
-		{
-			Node temp = head;
-			for (int i = 0; i < length; i++) 
-			{
+		Node temp = head;
+		while (temp != null) 
+		{	
 				System.out.print(" " + temp.data);
 				temp = temp.next;
-			}
 		}
 	}
 
